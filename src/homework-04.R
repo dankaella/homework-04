@@ -212,3 +212,20 @@ ggplot(data = hiphop_cand_lyrics , aes(x = as.factor(candidate),
         axis.ticks.x = element_blank()) +
   ylab("Frequency of mentions") +
 ggsave("fig/hiphop3.png", width = 12, height = 6, dpi = 100)
+
+#--- IV. feladat ---------------------------------------------------------------
+
+# 1.
+# Oszlopdiagram az emóciókról és szentimentekről:
+# Látható, hogy nem egyértelmű az emóciók besorolása a szentimentekbe
+ggplot(data = tweets, aes(x = text_emotion, 
+                          fill = text_sentiment)) + 
+  geom_bar(stat = "count", position = position_dodge()) +
+  ggtitle("Candidate Tweets") +
+  xlab("") +
+  ylab("Tweet frequency") +
+  theme(plot.title = element_text(hjust = 0.5), 
+          panel.background = element_blank()) +
+  scale_fill_discrete(name  ="Sentiment") +
+  facet_grid(.~ handle)
+# idősoros adatok
