@@ -1,11 +1,21 @@
-######################
-# Házi feladat 4     #
-# Programozás I.     #
-# 2016/17. II. félév #
-# Nagy Daniella      #
-# 2017.05.01.        #
-######################
+---
+title: "Házi feladat 4 - Emóciók és szentimentek"
+subtitle: |
+  | Programozás I.
+author: "Nagy Daniella"
+date: '2017. május. 1. '
+output: pdf_document
+---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## (Sajnos nem működik valamiért, hibát jelez. 
+## Már nem volt időm megnézni, hogy mi a baj.)
+
+## Emóciók és szentimentek elemzése
+### Előző sok feladat:
+```{r,echo=TRUE}
 #--- II. feladat ---------------------------------------------------------------
 
 # 1.
@@ -212,12 +222,13 @@ ggplot(data = hiphop_cand_lyrics , aes(x = as.factor(candidate),
         axis.ticks.x = element_blank()) +
   ylab("Frequency of mentions") +
 ggsave("fig/hiphop3.png", width = 12, height = 6, dpi = 100)
+```
 
-#--- IV. feladat ---------------------------------------------------------------
-
-# 1.
+### IV. feladat/ 1. - Oszlopdiagrammos összehasonlítás:
+```{r, echo = TRUE}
 # Oszlopdiagram az emóciókról és szentimentekről:
 # Látható, hogy nem egyértelmű az emóciók besorolása a szentimentekbe
+library(ggplot2)
 ggplot(data = tweets, aes(x = text_emotion, 
                           fill = text_sentiment)) + 
   geom_bar(stat = "count", position = position_dodge()) +
@@ -229,19 +240,4 @@ ggplot(data = tweets, aes(x = text_emotion,
   scale_fill_discrete(name  ="Sentiment") +
   facet_grid(.~ handle)
 ggsave("fig/emotions1.png", width = 12, height = 6, dpi = 100)
-# ...
-
-# 2.
-# erre nem volt időm
-
-# 3.
-# Szükséges package telepítése
-if (!("markdownr" %in% installed.packages())) {
-  install.packages("markdownr", dependencies = TRUE)
-}
-if (!("knitr" %in% installed.packages())) {
-  install.packages("knitr", dependencies = TRUE)
-}
-library(markdownr)
-library(knitr)
-
+```
