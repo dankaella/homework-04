@@ -228,4 +228,3 @@ ggplot(data = tweets, aes(x = text_emotion,
           panel.background = element_blank()) +
   scale_fill_discrete(name  ="Sentiment") +
   facet_grid(.~ handle)
-# idősoros adatok
