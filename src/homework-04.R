@@ -21,11 +21,15 @@ class(tweets$handle)
 # Hány tweet származik Hillary Clintontól és hány Donald Trumptól?
 table(tweets$handle)
 # ggplot2 telepítése
-install.packages("ggplot2", dependencies = TRUE)
+if (!("ggplot2" %in% installed.packages())) {
+  install.packages("ggplot2", dependencies = TRUE)
+}
 # package behívása
 library(ggplot2)
 # long formátumra van szükségünk, ehhez package  telepítése és behívása
-install.packages("reshape2", dependencies = TRUE)
+if (!("reshape2" %in% installed.packages())) {
+  install.packages("reshape2", dependencies = TRUE)
+}
 library(reshape2)
 # long formátumba átalakítom a data framet - minden változót meghagyok
 melt(tweets)
@@ -105,3 +109,106 @@ source("src/homework-04-functions.R")
 # első 15 legtöbbet retweetelt és kedvelt tweetjét.
 tweets_candidate("Hillary Clinton", 10)
 tweets_candidate("Donald Trump", 15)
+
+#--- III. feladat --------------------------------------------------------------
+
+# 1.
+# fivethirtyeight package installálása (ha még nem volt)
+if (!("fivethirtyeight" %in% installed.packages())) {
+    install.packages("fivethirtyeight")
+  }
+library("fivethirtyeight")
+# hiphop_cand_lyrics dataset megkeresése és beolvasása
+data(package = "fivethirtyeight")
+data(hiphop_cand_lyrics)
+head(hiphop_cand_lyrics)
+# az elemzés 1. ábrájának elkészítése
+ggplot(data = hiphop_cand_lyrics, aes(x = as.factor(album_release_date),
+                               fill = as.factor(candidate))) +
+  geom_dotplot(binwidth = 0.5, method = "dotdensity", 
+               stackgroups = TRUE, binpositions = "all", colour = NA) +
+  ggtitle("Every mention of 2016 primary candidates in hip-hop songs") +
+  scale_fill_manual(breaks = c("Donald Trump", "Hillary Clinton",
+                               "Jeb Bush", "Chris Christie",
+                               "Mike Huckabee", "Bernie Sanders",
+                               "Ben Carson", "Ted Cruz"),
+                    labels = c("Trump", "Clinton",
+                               "Bush", "Christie",
+                               "Huckabee", "Sanders",
+                               "Carson", "Cruz"),
+                    values = c("#A6D854","#66C2A5",
+                               "#FFD92F","#FEC075",
+                               "#94D7FA","#FF8974",
+                               "#FCCDE5","#E78AC3")) +
+theme(legend.title = element_blank(),
+      legend.position = "top",
+      legend.direction = "horizontal",
+      legend.background = element_blank(),
+      plot.title = element_text(hjust = 0.5),
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      panel.grid.major = element_line(colour= "darkgrey", size = 1),
+      panel.grid.minor = element_blank()) +
+scale_y_continuous(limits = c(0, 45),
+                   breaks = c(0, 5, 10, 15, 20, 25, 30, 35, 40)) + 
+scale_x_discrete(breaks = c(1990, 1995, 2000, 2005, 2010, 2015),
+                 labels = c("1990", "'95", "2000", "'05", "'10", "'15")) +
+guides(fill = guide_legend(nrow = 1,byrow = TRUE))
+ggsave("fig/hiphop1.png", width = 6.8, height = 6.8, dpi = 100)
+# az elemzés 2. ábrájának elkészítése
+# ehhez egy új oszlopot hozunk létre a kis ábrák sorrendjéhez
+hiphop_cand_lyrics$sentiment_f = factor(
+  hiphop_cand_lyrics$sentiment,
+  levels=c("positive","negative","neutral"))
+# maga az ábra
+ggplot(data = hiphop_cand_lyrics, aes(x = as.factor(album_release_date),
+                                      fill = as.factor(candidate))) + 
+    geom_dotplot(binwidth = 0.5, method = "dotdensity", 
+               stackgroups = TRUE, 
+               binpositions = "all", colour = NA) +
+    ggtitle("Candidate mentions, by sentiment") +
+    theme(legend.position = "bottom",
+          legend.title = element_blank(),
+          legend.direction = "horizontal",
+          legend.background = element_blank(),
+          plot.title = element_text(hjust = 0.5),
+          axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          panel.grid.major = element_line(colour= "darkgrey", size = 1),
+          panel.grid.minor = element_blank()) + 
+    scale_fill_manual(breaks = c("Donald Trump", "Hillary Clinton",
+                               "Jeb Bush", "Chris Christie",
+                               "Mike Huckabee", "Bernie Sanders",
+                               "Ben Carson", "Ted Cruz"),
+                    labels = c("Trump", "Clinton",
+                               "Bush", "Christie",
+                               "Huckabee", "Sanders",
+                               "Carson", "Cruz"),
+                    values = c("#A6D854","#66C2A5",
+                               "#FFD92F","#FEC075",
+                               "#94D7FA","#FF8974",
+                               "#FCCDE5","#E78AC3")) +
+    scale_y_continuous(limits = c(0, 20),
+                       breaks=seq(0, 20, 5)) +
+    scale_x_discrete(breaks = c(1990, 1995, 2000, 2005, 2010, 2015),
+                   labels = c("1990", "'95", "2000", "'05", "'10", "'15")) +
+    guides(fill = guide_legend(nrow = 1, byrow = TRUE)) +  
+    facet_grid(~ sentiment_f, scales = "fixed", space = "fixed")
+ggsave("fig/hiphop2.png", width = 12, height = 3, dpi = 100)
+
+# 2.
+# általam értelmesnek tartott ábra
+View(hiphop_cand_lyrics)
+# melyik jelölt milyen téma kapcsán mennyit volt említve (NA is bennmarad): 
+ggplot(data = hiphop_cand_lyrics , aes(x = as.factor(candidate),
+                                       y = ..count..,
+                                       fill = as.factor(theme))) + 
+  geom_bar(aes(fill = as.factor(theme))) +
+  ggtitle("Candidate mentions, by themes") +
+  theme(plot.title = element_text(hjust = 0.5),
+        legend.title = element_blank(),
+        panel.background = element_blank(),
+        axis.title.x = element_blank(),
+        axis.ticks.x = element_blank()) +
+  ylab("Frequency of mentions") +
+ggsave("fig/hiphop3.png", width = 12, height = 6, dpi = 100)
