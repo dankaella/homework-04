@@ -229,19 +229,51 @@ ggplot(data = tweets, aes(x = text_emotion,
   scale_fill_discrete(name  ="Sentiment") +
   facet_grid(.~ handle)
 ggsave("fig/emotions1.png", width = 12, height = 6, dpi = 100)
-# ...
+# Idősoros ábra - ezt sajnos nem teljesen értettem, és nem sikerült megcsinálnom
+# gyakoriságok kereszttáblája - csak információ miatt
+table(tweets$handle, tweets$text_emotion)
+table(tweets$handle, tweets$text_sentiment)
+# sentiments_trump <- as.data.frame(table(tweets$time[
+#  tweets$handle == "realDonaldTrump"],
+#  tweets$text_sentiment[
+#    tweets$handle == "realDonaldTrump"]))
+
+# emotions <- table(tweets$handle, tweets$text_emotion)
+
+# ggplot(data = tweets, aes(x = time, 
+  #                        y = text_sentiment,
+  #                        group = handle, 
+  #                        colour = handle)) +
+#  geom_line()
+
+#  statisztikailag szignifikáns-e a különbség a két jelölt szentimentjeinek 
+# ill. emócióinak száma között?
+# - ehhez chi-négyzet próbát használok
+?chisq.test()
+chisq.test(tweets$handle, tweets$text_emotion)
+chisq.test(tweets$handle, tweets$text_sentiment)
+# ezek alapján szignifikáns a különbség a két jelölt szeintimentjeinek száma,
+# ill. emócióinak a száma között - nem pusztán "véletlen" ; p érték nagyon kicsi
 
 # 2.
 # erre nem volt időm
 
 # 3.
 # Szükséges package telepítése
+# ez nem működik valamiért - lehet, hogy az R új verziójára való frissítés 
+# zavar be
 if (!("markdownr" %in% installed.packages())) {
   install.packages("markdownr", dependencies = TRUE)
+}
+# helyette ezzel próbálkozom:
+if (!("markdown" %in% installed.packages())) {
+install.packages("markdown", dependencies = TRUE)
 }
 if (!("knitr" %in% installed.packages())) {
   install.packages("knitr", dependencies = TRUE)
 }
+
 library(markdownr)
+library(markdown)
 library(knitr)
 
