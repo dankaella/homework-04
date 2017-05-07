@@ -3,7 +3,7 @@
 # Programozás I.     #
 # 2016/17. II. félév #
 # Nagy Daniella      #
-# 2017.05.01.        #
+# 2017.05.07.        #
 ######################
 
 #--- II. feladat ---------------------------------------------------------------
@@ -160,6 +160,8 @@ ggsave("fig/hiphop1.png", width = 6.8, height = 6.8, dpi = 100)
 hiphop_cand_lyrics$sentiment_f = factor(
   hiphop_cand_lyrics$sentiment,
   levels=c("positive","negative","neutral"))
+# a feliratokhoz még egy kis módosítás:
+labels <- c(positive = "POSITIVE", negative = "NEGATIVE", neutral = "NEUTRAL")
 # maga az ábra
 ggplot(data = hiphop_cand_lyrics, aes(x = as.factor(album_release_date),
                                       fill = as.factor(candidate))) + 
@@ -193,8 +195,12 @@ ggplot(data = hiphop_cand_lyrics, aes(x = as.factor(album_release_date),
     scale_x_discrete(breaks = c(1990, 1995, 2000, 2005, 2010, 2015),
                    labels = c("1990", "'95", "2000", "'05", "'10", "'15")) +
     guides(fill = guide_legend(nrow = 1, byrow = TRUE)) +  
-    facet_grid(~ sentiment_f, scales = "fixed", space = "fixed")
-ggsave("fig/hiphop2.png", width = 12, height = 3, dpi = 100)
+    facet_grid(~ sentiment_f, 
+               scales = "fixed", 
+               space = "fixed", 
+               labeller=labeller(sentiment_f = labels)) +
+  theme(strip.background = element_rect(colour="white", fill="white"))
+ggsave("fig/hiphop2.png", width = 12, height = 2.9, dpi = 100)
 
 # 2.
 # általam értelmesnek tartott ábra
@@ -210,14 +216,15 @@ ggplot(data = hiphop_cand_lyrics , aes(x = as.factor(candidate),
         panel.background = element_blank(),
         axis.title.x = element_blank(),
         axis.ticks.x = element_blank()) +
-  ylab("Frequency of mentions") +
+  ylab("Frequency of mentions")
 ggsave("fig/hiphop3.png", width = 12, height = 6, dpi = 100)
 
 #--- IV. feladat ---------------------------------------------------------------
 
 # 1.
 # Oszlopdiagram az emóciókról és szentimentekről:
-# Látható, hogy nem egyértelmű az emóciók besorolása a szentimentekbe
+# Látható, hogy nem egyértelmű az emóciók besorolása a szentimentekbe, azaz
+# az egyes emóciók esetében mindhárom szentiment előfordulhat
 ggplot(data = tweets, aes(x = text_emotion, 
                           fill = text_sentiment)) + 
   geom_bar(stat = "count", position = position_dodge()) +
@@ -229,6 +236,24 @@ ggplot(data = tweets, aes(x = text_emotion,
   scale_fill_discrete(name  ="Sentiment") +
   facet_grid(.~ handle)
 ggsave("fig/emotions1.png", width = 12, height = 6, dpi = 100)
+# Ha azt akarom ábrázolni, hogy az egyes szentimentek hogyan térnek el Trump és
+# Clinton esetén akkor ez az ábra lehet például hasznos (ha az emóciókat is
+# látni akarom):
+ggplot(data = tweets, aes(x = text_emotion, 
+                          fill = handle)) + 
+  geom_bar(stat = "count", position = position_dodge()) +
+  ggtitle("Candidate Tweets") +
+  xlab("") +
+  ylab("Tweet frequency") +
+  theme(plot.title = element_text(hjust = 0.5), 
+        panel.background = element_blank()) +
+  scale_fill_manual(name = "Candidate",
+                    labels = c("Hillary Clinton","Donald Trump"),
+                    values = c("blue", "red")) +
+  facet_grid(text_sentiment ~ .) +
+  theme(strip.background = element_rect(colour="white", fill="white"))
+ggsave("fig/emotions2.png", width = 6, height = 18, dpi = 100)
+
 # Idősoros ábra - ezt sajnos nem teljesen értettem, és nem sikerült megcsinálnom
 # gyakoriságok kereszttáblája - csak információ miatt
 table(tweets$handle, tweets$text_emotion)

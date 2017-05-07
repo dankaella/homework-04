@@ -19,10 +19,10 @@ szerint, különböznek-e a két forrásból származó tweetek szentimentjei il
 emóciói. Ezt követően azt is megnézem, 
 hogy statisztikailag szignifikáns-e a különbség!
 
-```{r fig.width=6, fig.height=4, echo=FALSE}
+```{r fig.width=10, fig.height=4, echo=FALSE}
 library(ggplot2)
 tweets <- read.csv2(file = "../data/clinton_trump_tweets.csv")
-
+# itt módosítanom kellett az elérési útvonal megadásán, hogy megtalálja a filet
 emotions <-
   
   ggplot(data = tweets, aes(x = text_emotion, 
