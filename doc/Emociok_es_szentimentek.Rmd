@@ -1,0 +1,39 @@
+---
+title: "Házi feladat 4 - Emóciók és szentimentek"
+subtitle: |
+  | Kurzus: Programozás I.
+author: "Nagy Daniella"
+date: "Dátum: 2017-05-07"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+```
+
+## Emóciók és szentimentek elemzése
+Többen feltételezték, hogy Trump tweetjeit (legalább) két különböző ember írja,
+az androidosokat feltételezhetően Trump, az iphone-osokat pedig valaki más. A
+következőkben vizuálisan megmutatom, hogy a rendelkezésünkre álló adatok
+szerint, különböznek-e a két forrásból származó tweetek szentimentjei illetve
+emóciói. Ezt követően azt is megnézem, 
+hogy statisztikailag szignifikáns-e a különbség!
+
+```{r fig.width=6, fig.height=4, echo=FALSE}
+library(ggplot2)
+tweets <- read.csv2(file = "../data/clinton_trump_tweets.csv")
+
+emotions <-
+  
+  ggplot(data = tweets, aes(x = text_emotion, 
+                          fill = text_sentiment)) + 
+  geom_bar(stat = "count", position = position_dodge()) +
+  ggtitle("Candidate Tweets") +
+  xlab("") +
+  ylab("Tweet frequency") +
+  theme(plot.title = element_text(hjust = 0.5), 
+          panel.background = element_blank()) +
+  scale_fill_discrete(name  ="Sentiment") +
+  facet_grid(.~ handle)
+emotions
+```

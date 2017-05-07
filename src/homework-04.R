@@ -260,20 +260,13 @@ chisq.test(tweets$handle, tweets$text_sentiment)
 
 # 3.
 # Szükséges package telepítése
-# ez nem működik valamiért - lehet, hogy az R új verziójára való frissítés 
-# zavar be
-if (!("markdownr" %in% installed.packages())) {
+if (!("rmarkdown" %in% installed.packages())) {
   install.packages("markdownr", dependencies = TRUE)
-}
-# helyette ezzel próbálkozom:
-if (!("markdown" %in% installed.packages())) {
-install.packages("markdown", dependencies = TRUE)
 }
 if (!("knitr" %in% installed.packages())) {
   install.packages("knitr", dependencies = TRUE)
 }
 
-library(markdownr)
-library(markdown)
+library(rmarkdown)
 library(knitr)
 
